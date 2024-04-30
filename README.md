@@ -1,15 +1,13 @@
 # SplunkDockerCompose
 A simple repo for a docker-compose.yml file for deploying a splunk image to a node on my account with app.cloudlets.com.au
 
-See
+For details see
 * https://www.virtuozzo.com/application-platform-docs/docker-engine-deployment
 * https://splunk.github.io/docker-splunk/EXAMPLES.html#create-standalone-from-compose
 
-And if the cloudlet is up and running you can access it at 
-* https://vid-splunk-docker-compose.mel.cloudlets.com.au
-
-For some new login credentials contact me at 
-* https://www.linkedin.com/in/vincent-dirks
+And if the cloudlet is up and running you can access it below 
+* https://vid-splunk-docker-compose.mel.cloudlets.com.au <br>
+(for your own credentials contact me on [LinkedIn](https://www.linkedin.com/in/vincent-dirks))
 
 ## Instructions
 1. Make sure `docker` and `docker compose` are installed
@@ -19,10 +17,11 @@ For some new login credentials contact me at
 In cloudlets use the `Compose Repo` setting <br>
 At `New Environment => Custom => Docker Engine => Deploy containers from compose.yml` <br>
 (The setting is only availble and shown when creating a new environment)
-5. Copy file `docker-compose.service` <br>
-to `/etc/systemd/system/` and <br>
-execute `systemctl daemon-reload`. <br>
-After this you can use `systemctl docker-compose start` etc...
+5. In cloudlets navigate to `Docker Engine Node => Variables` and <br>
+add SPLUNK_PASSWORD and set it to the value you wish to use. 
+5. Setup the `docker-compose.service` by running <br>
+`/root/application/setupServiceDaemon.sh` `. <br>
+After this you can use `systemctl start docker-compose` etc...
 7. In cloudlets navigate to `Docker Engine Node => CMD/Entry Point` and <br>
 change it to `systemctl start docker-compose`
 8. In cloudlets navigate to `Docker Engine Node => Config`<br>
@@ -31,7 +30,8 @@ add `/etc/systemd/system/docker-compose.service` to the `Custom Files and Folder
 This should retain the service during redeploys, it should only need to be done once when creating the environment. 
 
 ## Notes
-In cloudlets the docker-compose.yml file does not seem to be refreshed during restarts, nor redeploys. (Or at least I haven't found an action yet that does). To manually update the repo files, you can SSH to the node, and execute 
+* The SPLUNK_PASSWORD is used in the first execution of the Splunk image to set the admin password, thereafter it is used as that value. 
+* In cloudlets the docker-compose.yml file does not seem to be refreshed during restarts, nor redeploys. (Or at least I haven't found an action yet that does). To manually update the repo files, you can SSH to the node, and execute 
 
 ```
 cd /root/application
@@ -40,4 +40,4 @@ git pull
 ```
 followed by a restart. 
 
-Usefully, the `docker-compose.service` includes the git commands when the service the started. 
+Usefully, the `docker-compose.service` includes the git commands when the service is started. 
